@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "join-years",
+  "version": "${version}",
+  "name": "Join Years",
+  "description": "Shows the year each player first joined constantiam.net in the tab list, using /joindate.",
+  "authors": [
+    "9733"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "dev.joinyears.JoinYearsAddon"
+    ]
+  },
+  "mixins": [
+    "join-years.mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "255,170,40",
+    "modmenu": {
+      "parent": {
+        "id": "meteor-client"
+      }
+    }
+  },
+  "depends": {
+    "java": ">=21",
+    "minecraft": ["${mc_version}"],
+    "meteor-client": "*"
+  }
+}
