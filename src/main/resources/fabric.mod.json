@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "id": "join-years",
+  "id": "constantiam-tab",
   "version": "${version}",
-  "name": "Join Years",
-  "description": "Shows the year each player first joined constantiam.net in the tab list, using /joindate.",
+  "name": "Constantiam Tab",
+  "description": "Tab list for constantiam.net: join dates and play time from /joindate, players who left, friends, join year statistics and a list that fits the screen.",
   "authors": [
     "9733"
   ],
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "dev.joinyears.JoinYearsAddon"
+      "dev.constantiamtab.ConstantiamTabAddon"
     ]
   },
   "mixins": [
-    "join-years.mixins.json"
+    "constantiam-tab.mixins.json"
   ],
   "custom": {
     "meteor-client:color": "255,170,40",

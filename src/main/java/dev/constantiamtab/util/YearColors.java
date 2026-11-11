@@ -1,6 +1,9 @@
-package dev.joinyears.util;
+package dev.constantiamtab.util;
 
-/** Older is hotter, like item rarity: gold for the very first players, cooling through red and purple to plain grey for new ones. */
+/**
+ * Rarer is hotter, like item rarity. For join years, older is rarer: gold for the very first players, cooling through red
+ * and purple to plain grey for new ones. Play time uses the same colours the other way round: the most days are gold.
+ */
 public final class YearColors {
     public static final int FIRST_YEAR = 2016;
     public static final int LAST_YEAR = 2026;
@@ -20,11 +23,20 @@ public final class YearColors {
         0xB0B0B0, // 2026 grey
     };
 
+    /** Lowest day count for each colour, from grey up to gold. */
+    public static final int[] DAY_STEPS = {0, 1, 3, 7, 14, 30, 60, 100, 200, 365, 730};
+
     private YearColors() {
     }
 
     public static int of(int year) {
         int index = Math.clamp(year - FIRST_YEAR, 0, COLORS.length - 1);
         return COLORS[index];
+    }
+
+    public static int ofDays(int days) {
+        int step = 0;
+        while (step + 1 < DAY_STEPS.length && days >= DAY_STEPS[step + 1]) step++;
+        return COLORS[COLORS.length - 1 - step];
     }
 }

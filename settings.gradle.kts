@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "join-years"
+rootProject.name = "constantiam-tab"

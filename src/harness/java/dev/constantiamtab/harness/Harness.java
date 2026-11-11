@@ -1,8 +1,8 @@
-package dev.joinyears.harness;
+package dev.constantiamtab.harness;
 
 import com.mojang.authlib.GameProfile;
-import dev.joinyears.modules.JoinYears;
-import dev.joinyears.util.JoinYearCache;
+import dev.constantiamtab.modules.ConstantiamTab;
+import dev.constantiamtab.util.JoinYearCache;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -14,6 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerRemoveS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
 import org.slf4j.Logger;
@@ -122,8 +123,11 @@ public class Harness implements ClientModInitializer {
         replies.add("Player: " + name);
         replies.add("First seen: " + year + "/06/13");
         if (mode.equals("interleave")) replies.add("<someone> and again");
-        replies.add("Last seen: Online now");
-        replies.add("Play time: 0d 6h 14m");
+        // Players whose names start with "Off" are offline, last seen 2026/11/08 14:04 UTC
+        replies.add(name.startsWith("Off") ? "Last seen: 2026/11/08 14:04" : "Last seen: Online now");
+        // A spread of play times that doesn't follow the join years, so the two sorts give different orders
+        int days = Math.floorMod(name.hashCode() * 31, 900);
+        replies.add("Play time: " + days + "d " + Math.floorMod(name.hashCode(), 24) + "h 14m");
         replies.add("---");
     }
 
@@ -143,9 +147,27 @@ public class Harness implements ClientModInitializer {
     private void run(MinecraftClient mc, String line) throws Exception {
         LOG.info("[HARNESS] > {}", line);
         String[] parts = line.split(" ", 2);
-        Module module = Modules.get().get(JoinYears.class);
+        Module module = Modules.get().get(ConstantiamTab.class);
         switch (parts[0]) {
             case "players" -> addFakePlayers(mc, parts[1].split(" "));
+            case "close" -> mc.setScreen(null);
+            case "meteor" -> {
+                // meteor <module> on|off
+                String[] args = parts[1].split(" ");
+                Module other = Modules.get().get(args[0]);
+                if (other.isActive() != args[1].equals("on")) other.toggle();
+                LOG.info("[HARNESS] {} active={}", args[0], other.isActive());
+            }
+            case "friend" -> {
+                for (String name : parts[1].split(" ")) {
+                    meteordevelopment.meteorclient.systems.friends.Friends.get().add(new meteordevelopment.meteorclient.systems.friends.Friend(name));
+                }
+            }
+            case "leave" -> {
+                List<UUID> ids = new ArrayList<>();
+                for (String name : parts[1].split(" ")) ids.add(UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8)));
+                mc.getNetworkHandler().onPlayerRemove(new PlayerRemoveS2CPacket(ids));
+            }
             case "mode" -> {
                 mode = parts[1];
                 count = 0;

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "id": "joinyears-harness",
+  "id": "constantiamtab-harness",
   "version": "0.0.0",
-  "name": "Join Years test harness",
+  "name": "Constantiam Tab test harness",
   "environment": "client",
   "entrypoints": {
-    "client": ["dev.joinyears.harness.Harness"]
+    "client": ["dev.constantiamtab.harness.Harness"]
   },
   "depends": {
-    "join-years": "*"
+    "constantiam-tab": "*"
   }
 }

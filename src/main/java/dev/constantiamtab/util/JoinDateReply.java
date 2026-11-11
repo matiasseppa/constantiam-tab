@@ -1,4 +1,4 @@
-package dev.joinyears.util;
+package dev.constantiamtab.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +21,9 @@ public final class JoinDateReply {
     private static final Pattern PLAYER = Pattern.compile("Player: (\\w+)");
     private static final Pattern FIRST_SEEN = Pattern.compile("First seen: ((\\d{4})/\\d{2}/\\d{2})");
     private static final Pattern PLAY_TIME = Pattern.compile("Play time: (.+)");
+    // The server gives last seen times in UTC: "Last seen: 2026/11/01 10:16", or "Last seen: Online now"
+    private static final Pattern LAST_SEEN = Pattern.compile("Last seen: (\\d{4})/(\\d{2})/(\\d{2}) (\\d{2}):(\\d{2})");
+    private static final Pattern PLAY_TIME_PARTS = Pattern.compile("(\\d+)d\\s+(\\d+)h\\s+(\\d+)m");
     // Under a second left, the server leaves the number out: "You still have  left on that command"
     private static final Pattern COOLDOWN = Pattern.compile("You still have\\s*(?:(\\d+)s)?\\s*left on that command");
     // Meteor's Better Chat counts repeated lines with a suffix, in case it got to the line first
@@ -53,6 +56,25 @@ public final class JoinDateReply {
     public static String playTime(String line) {
         Matcher matcher = PLAY_TIME.matcher(line);
         return matcher.matches() ? matcher.group(1) : null;
+    }
+
+    /** The last seen time in epoch milliseconds, or null if this isn't a dated Last seen line. */
+    public static Long lastSeen(String line) {
+        Matcher matcher = LAST_SEEN.matcher(line);
+        if (!matcher.matches()) return null;
+        try {
+            return java.time.LocalDateTime.of(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)),
+                Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))).toInstant(java.time.ZoneOffset.UTC).toEpochMilli();
+        } catch (java.time.DateTimeException e) {
+            return null;
+        }
+    }
+
+    /** Minutes in a play time like "129d 3h 44m", or null if it isn't in that form. */
+    public static Integer playTimeMinutes(String playTime) {
+        Matcher matcher = PLAY_TIME_PARTS.matcher(playTime);
+        if (!matcher.find()) return null;
+        return (Integer.parseInt(matcher.group(1)) * 24 + Integer.parseInt(matcher.group(2))) * 60 + Integer.parseInt(matcher.group(3));
     }
 
     /** Whole seconds left on the command's cooldown (0 when under one), or -1 if this isn't that message. */

@@ -42,10 +42,10 @@ sourceSets {
 
 loom {
     mods {
-        create("join-years") {
+        create("constantiam-tab") {
             sourceSet(sourceSets["main"])
         }
-        create("joinyears-harness") {
+        create("constantiamtab-harness") {
             sourceSet(sourceSets["harness"])
         }
     }

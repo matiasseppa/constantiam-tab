@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "dev.joinyears.mixin",
+  "package": "dev.constantiamtab.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
     "PlayerListHudMixin"

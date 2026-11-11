@@ -1,19 +1,19 @@
-package dev.joinyears;
+package dev.constantiamtab;
 
-import dev.joinyears.commands.JoinYearsCommand;
-import dev.joinyears.modules.JoinYears;
+import dev.constantiamtab.commands.ConstantiamTabCommand;
+import dev.constantiamtab.modules.ConstantiamTab;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 
-public class JoinYearsAddon extends MeteorAddon {
+public class ConstantiamTabAddon extends MeteorAddon {
     public static Category CATEGORY = new Category("Claude's Meteor Addons");
 
     @Override
     public void onInitialize() {
-        Modules.get().add(new JoinYears());
-        Commands.add(new JoinYearsCommand());
+        Modules.get().add(new ConstantiamTab());
+        Commands.add(new ConstantiamTabCommand());
     }
 
     @Override
@@ -30,6 +30,6 @@ public class JoinYearsAddon extends MeteorAddon {
 
     @Override
     public String getPackage() {
-        return "dev.joinyears";
+        return "dev.constantiamtab";
     }
 }
